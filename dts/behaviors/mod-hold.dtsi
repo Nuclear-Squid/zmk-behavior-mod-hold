@@ -1,0 +1,23 @@
+#define MOD_HOLD_0(name, behavior, mods_to_hold) \
+  name: name {                                   \
+    compatible = "zmk,behavior-mod-hold";        \
+    #binding-cells = <0>;                        \
+    binding = <behavior>;                        \
+    mods-to-hold = <(mods_to_hold)>;             \
+  };
+
+#define MOD_HOLD_1(name, behavior, mods_to_hold)    \
+  name: name {                                      \
+    compatible = "zmk,behavior-mod-hold-one-param"; \
+    #binding-cells = <1>;                           \
+    binding = <behavior>;                           \
+    mods-to-hold = <(mods_to_hold)>;                \
+  };
+
+#define MOD_HOLD_2(name, behavior, mods_to_hold)    \
+  name: name {                                      \
+    compatible = "zmk,behavior-mod-hold-two-param"; \
+    #binding-cells = <2>;                           \
+    binding = <behavior>;                           \
+    mods-to-hold = <(mods_to_hold)>;                \
+  };

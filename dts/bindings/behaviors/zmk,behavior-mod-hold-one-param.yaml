@@ -1,0 +1,2 @@
+compatible: "zmk,behavior-mod-hold-one-param"
+include: [mod-hold-base.yaml, one_param.yaml]

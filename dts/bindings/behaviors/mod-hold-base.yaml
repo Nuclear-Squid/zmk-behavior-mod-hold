@@ -8,10 +8,6 @@ description: |
   This allows the user to release the keys producing the original
   modifiers, enabling one-handed shortcuts using home row mods.
 
-compatible: "zmk,behavior-mod-hold"
-
-include: two_param.yaml
-
 properties:
   binding:
     type: phandle

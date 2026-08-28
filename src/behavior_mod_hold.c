@@ -12,8 +12,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/behavior.h>
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 struct behavior_mod_hold_config {
     struct zmk_behavior_binding binding;
     zmk_mod_flags_t mods_to_hold;
@@ -71,28 +69,28 @@ static const struct behavior_driver_api mod_hold_driver_api = {
 };
 
 
-#define INST_KEYMAP_EXTRACT_BINDING(n, binding_name) {                        \
-    .behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE(n, binding_name)),         \
-    .param1 = DT_INST_PHA_BY_IDX_OR(n, binding_name, 0, param1, 0),           \
-    .param2 = DT_INST_PHA_BY_IDX_OR(n, binding_name, 1, param2, 0),           \
+#define KEYMAP_EXTRACT_BINDING(inst, binding_name) {                             \
+    .behavior_dev = DEVICE_DT_NAME(DT_PHANDLE(inst, binding_name)),              \
+    .param1 = DT_PHA_BY_IDX_OR(inst, binding_name, 0, param1, 0),                \
+    .param2 = DT_PHA_BY_IDX_OR(inst, binding_name, 1, param2, 0),                \
 }
 
-#define mod_hold_INST(n)                                                      \
-    static struct behavior_mod_hold_config behavior_mod_hold_config_##n = {   \
-        .mods_to_hold = DT_INST_PROP(n, mods_to_hold),                        \
-        .binding = INST_KEYMAP_EXTRACT_BINDING(n, binding)                    \
-    };                                                                        \
-                                                                              \
-    BEHAVIOR_DT_INST_DEFINE(                                                  \
-        n,     /* Instance Number (Automatically populated by macro) */       \
-        NULL,  /* Initialization Function */                                  \
-        NULL,  /* Power Management Device Pointer */                          \
-        NULL,  /* Behavior Data Pointer */                                    \
-        &behavior_mod_hold_config_##n,  /* Behavior Configuration Pointer */  \
-        POST_KERNEL,  /* Initialization Level */                              \
-        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,  /* Device Priority */           \
-        &mod_hold_driver_api);  // API struct
+#define MOD_HOLD_INST(inst)                                                      \
+    static struct behavior_mod_hold_config behavior_mod_hold_config_##inst = {   \
+        .mods_to_hold = DT_PROP(inst, mods_to_hold),                             \
+        .binding = KEYMAP_EXTRACT_BINDING(inst, binding)                         \
+    };                                                                           \
+                                                                                 \
+    BEHAVIOR_DT_DEFINE(                                                          \
+        inst,     /* Instance (Automatically populated by macro) */              \
+        NULL,  /* Initialization Function */                                     \
+        NULL,  /* Power Management Device Pointer */                             \
+        NULL,  /* Behavior Data Pointer */                                       \
+        &behavior_mod_hold_config_##inst,  /* Behavior Configuration Pointer */  \
+        POST_KERNEL,  /* Initialization Level */                                 \
+        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,  /* Device Priority */              \
+        &mod_hold_driver_api);  /* API struct */
 
-DT_INST_FOREACH_STATUS_OKAY(mod_hold_INST)
-
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
+DT_FOREACH_STATUS_OKAY(zmk_behavior_mod_hold, MOD_HOLD_INST)
+DT_FOREACH_STATUS_OKAY(zmk_behavior_mod_hold_one_param, MOD_HOLD_INST)
+DT_FOREACH_STATUS_OKAY(zmk_behavior_mod_hold_two_param, MOD_HOLD_INST)
